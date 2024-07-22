@@ -24,4 +24,4 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-interaction
       - name: Run test suite
-        run: composer run-script test
+        run: php artisan test
