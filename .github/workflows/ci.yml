@@ -29,3 +29,21 @@ jobs:
         run: php artisan key:generate
       - name: Run test suite
         run: php artisan test
+      - name: Setup Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:githubdeploy
+      - name: Deploy to Tailscale Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 100.99.28.19
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script_stop: true
+          script: |
+            cd /srv/inventaris.binsarjr.com/
+            git pull
+            composer install --no-dev --optimize-autoloader --no-interaction --no-progress --no-suggest
